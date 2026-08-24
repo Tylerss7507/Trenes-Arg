@@ -39,15 +39,8 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-extended")
 
-    // Room DB
-    implementation("androidx.room:room-runtime:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
-
-    // Retrofit API
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-
-    // GPS & Background Services
     implementation("com.google.android.gms:play-services-location:21.1.0")
     implementation("androidx.work:work-runtime-ktx:2.9.0")
 }
