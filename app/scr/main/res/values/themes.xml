@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tema mínimo: la UI real (colores, tipografía) se define en Compose,
+         vía MaterialTheme en ui/theme/Theme.kt. Esto solo controla la ventana
+         antes de que Compose tome control (splash del sistema, status bar). -->
+    <style name="Theme.TrenYa" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/launcher_background</item>
+        <item name="android:windowBackground">@color/launcher_background</item>
+    </style>
+</resources>
