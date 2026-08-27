@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- La paleta completa de la UI vive en Kotlin (ui/theme/Theme.kt).
+         Estos colores son solo para piezas que Android exige en XML puro:
+         fondo del ícono adaptativo y el color de acento de notificaciones. -->
+    <color name="launcher_background">#0D1B3E</color>
+    <color name="notification_color">#2954E3</color>
+</resources>
