@@ -70,7 +70,7 @@ private fun WidgetContent(stationName: String?, countdown: String, destination: 
         if (destination != null) {
             Text(
                 text = destination,
-                style = TextStyle(fontSize = 12.sp, color = ColorProvider(day = Color.DarkGray, night = Color.LightGray))
+                style = TextStyle(fontSize = 12.sp, color = ColorProvider(Color.Gray))
             )
         }
     }
