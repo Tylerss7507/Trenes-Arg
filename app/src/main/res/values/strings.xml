@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TrenYa</string>
+    <string name="app_tagline">Tus trenes, en vivo</string>
+    <string name="widget_label">TrenYa · Próximo tren</string>
+
+    <!-- Navegación -->
+    <string name="nav_home">Inicio</string>
+    <string name="nav_search">Buscar</string>
+    <string name="nav_favorites">Favoritas</string>
+    <string name="nav_lines">Líneas</string>
+    <string name="nav_settings">Ajustes</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title">Bienvenido a TrenYa</string>
+    <string name="onboarding_subtitle">Horarios y demoras en vivo de todos los trenes de SOFSE, sin vueltas</string>
+    <string name="onboarding_location_title">Ubicación</string>
+    <string name="onboarding_location_desc">Para mostrarte automáticamente las estaciones más cercanas</string>
+    <string name="onboarding_notifications_title">Notificaciones</string>
+    <string name="onboarding_notifications_desc">Para avisarte demoras o cambios en tus estaciones y líneas favoritas</string>
+    <string name="onboarding_grant">Dar permiso</string>
+    <string name="onboarding_granted">Listo</string>
+    <string name="onboarding_skip">Ahora no</string>
+    <string name="onboarding_continue">Empezar</string>
+
+    <!-- Home -->
+    <string name="home_nearby_title">Estaciones cerca tuyo</string>
+    <string name="home_nearby_empty">Activá la ubicación para ver tus estaciones más cercanas</string>
+    <string name="home_nearby_enable_location">Activar ubicación</string>
+    <string name="home_favorites_title">Tus favoritas</string>
+    <string name="home_no_favorites">Todavía no marcaste ninguna estación como favorita. Tocá la estrella en cualquier estación para agregarla acá.</string>
+    <string name="home_greeting">¿A dónde viajás hoy?</string>
+
+    <!-- Estación / arribos -->
+    <string name="station_next_trains">Próximos trenes</string>
+    <string name="station_no_trains">No hay más servicios programados por ahora</string>
+    <string name="station_platform">Andén %1$s</string>
+    <string name="station_towards">A %1$s</string>
+    <string name="station_from">Desde %1$s</string>
+    <string name="station_arrives_in">Llega en %1$s</string>
+    <string name="station_arrived">Llegando</string>
+    <string name="station_view_all_stops">Ver todas las paradas</string>
+    <string name="station_last_updated">Actualizado %1$s</string>
+    <string name="station_offline_notice">Sin conexión · mostrando los últimos datos guardados</string>
+    <string name="station_notify_toggle">Avisarme demoras acá</string>
+    <string name="station_filter_branch">Ramal</string>
+    <string name="station_filter_all">Todos</string>
+    <string name="station_plan_trip">Planificar viaje desde acá</string>
+
+    <!-- Estados de tren -->
+    <string name="status_normal">En horario</string>
+    <string name="status_delayed">Demorado</string>
+    <string name="status_altered">Servicio alterado</string>
+    <string name="status_cancelled">Cancelado</string>
+    <string name="status_unknown">Sin datos</string>
+
+    <!-- Buscador -->
+    <string name="search_hint">Buscar estación…</string>
+    <string name="search_empty_query">Escribí el nombre de una estación</string>
+    <string name="search_no_results">No encontramos estaciones con ese nombre</string>
+    <string name="search_recent">Búsquedas recientes</string>
+
+    <!-- Favoritos -->
+    <string name="favorites_title">Estaciones favoritas</string>
+    <string name="favorites_remove">Quitar de favoritas</string>
+    <string name="favorites_add">Agregar a favoritas</string>
+
+    <!-- Líneas -->
+    <string name="lines_title">Líneas</string>
+    <string name="lines_subtitle">Elegí una línea para ver sus ramales y estaciones</string>
+
+    <!-- Planificador de viaje -->
+    <string name="planner_title">Planificar viaje</string>
+    <string name="planner_origin">Origen</string>
+    <string name="planner_destination">Destino</string>
+    <string name="planner_swap">Invertir origen y destino</string>
+    <string name="planner_search">Buscar próximos trenes</string>
+    <string name="planner_select_both">Elegí una estación de origen y una de destino</string>
+    <string name="planner_no_direct">No encontramos servicios directos entre estas dos estaciones ahora</string>
+    <string name="planner_duration">%1$s de viaje aprox.</string>
+
+    <!-- Ajustes -->
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_notifications">Notificaciones</string>
+    <string name="settings_notifications_desc">Recibir avisos de demoras en tus favoritas</string>
+    <string name="settings_poll_interval">Frecuencia de chequeo</string>
+    <string name="settings_theme">Tema</string>
+    <string name="settings_theme_system">Automático</string>
+    <string name="settings_theme_light">Claro</string>
+    <string name="settings_theme_dark">Oscuro</string>
+    <string name="settings_about">Acerca de TrenYa</string>
+    <string name="settings_about_body">TrenYa es una app independiente, no oficial ni afiliada a SOFSE / Trenes Argentinos. Los horarios y estados mostrados son referenciales y pueden cambiar sin previo aviso. Para información oficial, consultá trenesargentinos.gob.ar.</string>
+    <string name="settings_data_source">Fuente de datos</string>
+    <string name="settings_version">Versión %1$s</string>
+
+    <!-- Notificaciones -->
+    <string name="notif_channel_delays_name">Demoras y alertas</string>
+    <string name="notif_channel_delays_desc">Avisos cuando una estación o línea favorita tiene demoras o cambios</string>
+    <string name="notif_channel_general_name">General</string>
+    <string name="notif_channel_general_desc">Novedades generales de la app</string>
+    <string name="notif_delay_title">%1$s: %2$s</string>
+
+    <!-- Genérico -->
+    <string name="retry">Reintentar</string>
+    <string name="loading">Cargando…</string>
+    <string name="error_generic">Algo salió mal. Probá de nuevo.</string>
+    <string name="error_network">No hay conexión a internet</string>
+    <string name="minutes_short">%1$d min</string>
+    <string name="hours_minutes_short">%1$dh %2$dmin</string>
+    <string name="widget_no_favorite">Elegí una estación favorita en la app</string>
+    <string name="widget_updated_at">Hace %1$s</string>
+</resources>

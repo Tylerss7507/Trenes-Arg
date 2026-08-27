@@ -1,5 +1,8 @@
 name: Build APK
 
+# Se ejecuta solo con este archivo en el repo, sin necesidad de gradlew local.
+# Compila un APK debug (instalable directo, sin necesidad de firma release).
+
 on:
   push:
     branches: [ main, master ]

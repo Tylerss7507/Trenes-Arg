@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- Solo respaldamos preferencias (favoritas, ajustes). Nada de caché de red. -->
+    <include domain="sharedpref" path="." />
+    <exclude domain="sharedpref" path="WorkManagerPrefs.xml" />
+</full-backup-content>
