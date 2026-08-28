@@ -35,9 +35,11 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.trenya.app.R
 import com.trenya.app.data.TrainRepository
 import com.trenya.app.data.UserPreferencesRepository
+import com.trenya.app.data.model.DataResult
 import com.trenya.app.data.model.Station
 import com.trenya.app.ui.LocalAppContainer
 import com.trenya.app.ui.components.EmptyState
+import com.trenya.app.ui.components.ErrorState
 import com.trenya.app.ui.components.SectionHeader
 import com.trenya.app.ui.components.StationCard
 import kotlinx.coroutines.Job
@@ -55,7 +57,8 @@ data class SearchUiState(
     val results: List<Station> = emptyList(),
     val isSearching: Boolean = false,
     val recentStations: List<Station> = emptyList(),
-    val favoriteIds: Set<String> = emptySet()
+    val favoriteIds: Set<String> = emptySet(),
+    val errorMessage: String? = null
 )
 
 class SearchViewModel(
@@ -80,14 +83,17 @@ class SearchViewModel(
         _state.value = _state.value.copy(query = query)
         searchJob?.cancel()
         if (query.isBlank()) {
-            _state.value = _state.value.copy(results = emptyList(), isSearching = false)
+            _state.value = _state.value.copy(results = emptyList(), isSearching = false, errorMessage = null)
             return
         }
         searchJob = viewModelScope.launch {
             delay(DEBOUNCE_MILLIS)
-            _state.value = _state.value.copy(isSearching = true)
-            val results = trainRepository.searchStations(query)
-            _state.value = _state.value.copy(results = results, isSearching = false)
+            _state.value = _state.value.copy(isSearching = true, errorMessage = null)
+            when (val result = trainRepository.searchStations(query)) {
+                is DataResult.Success -> _state.value = _state.value.copy(results = result.data, isSearching = false)
+                is DataResult.Error -> _state.value = _state.value.copy(results = emptyList(), isSearching = false, errorMessage = result.message)
+                DataResult.Loading -> Unit
+            }
         }
     }
 
@@ -139,6 +145,10 @@ fun SearchScreen(onStationClick: (String) -> Unit) {
         )
 
         when {
+            state.errorMessage != null -> ErrorState(
+                state.errorMessage!!,
+                onRetry = { viewModel.onQueryChange(state.query) }
+            )
             state.query.isBlank() && state.recentStations.isEmpty() -> {
                 EmptyState(title = stringResource(R.string.search_empty_query))
             }

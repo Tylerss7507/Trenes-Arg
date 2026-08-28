@@ -17,7 +17,6 @@ import com.trenya.app.data.remote.SofseApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.text.Normalizer
 import java.util.concurrent.TimeUnit
 
 class TrainRepository(
@@ -64,12 +63,35 @@ class TrainRepository(
         }
     }
 
-    suspend fun searchStations(query: String): List<Station> {
-        if (query.isBlank()) return emptyList()
-        val normalizedQuery = normalize(query)
-        return getAllStations()
-            .filter { normalize(it.name).contains(normalizedQuery) }
-            .sortedBy { it.name }
+    /**
+     * Busca estaciones por nombre directamente contra la API (parámetro
+     * `nombre`), en vez de traer la lista completa y filtrar en el
+     * dispositivo. Esto es lo que hace posible el autocompletado: cada
+     * letra dispara una consulta liviana y en vivo al servidor, en vez de
+     * depender de haber podido descargar antes las ~300 estaciones enteras.
+     *
+     * De paso, guarda en la caché en memoria cada estación que aparece en
+     * un resultado, para que getStationById() pueda encontrarla más tarde
+     * sin necesitar getAllStations().
+     */
+    suspend fun searchStations(query: String): DataResult<List<Station>> = withContext(Dispatchers.IO) {
+        if (query.isBlank()) return@withContext DataResult.Success(emptyList())
+        try {
+            val stations = api.buscarEstaciones(nombre = query.trim())
+                .mapNotNull { it.toDomain() }
+                .sortedBy { it.name }
+            mergeIntoMemoryCache(stations)
+            DataResult.Success(stations)
+        } catch (e: Exception) {
+            DataResult.Error(e.message ?: "No pudimos conectar con el buscador de estaciones")
+        }
+    }
+
+    private fun mergeIntoMemoryCache(stations: List<Station>) {
+        if (stations.isEmpty()) return
+        val merged = inMemoryStations.orEmpty().associateBy { it.id }.toMutableMap()
+        stations.forEach { merged[it.id] = it }
+        inMemoryStations = merged.values.toList()
     }
 
     suspend fun getStationById(id: String): Station? =
@@ -196,10 +218,4 @@ class TrainRepository(
             else -> TrainStatus.ALTERED
         }
     }
-
-    private fun normalize(text: String): String =
-        Normalizer.normalize(text, Normalizer.Form.NFD)
-            .replace(Regex("\\p{Mn}"), "")
-            .lowercase()
-            .trim()
 }

@@ -90,7 +90,11 @@ class TripPlannerViewModel(private val trainRepository: TrainRepository) : ViewM
         }
         originJob = viewModelScope.launch {
             delay(DEBOUNCE_MILLIS)
-            _state.value = _state.value.copy(originResults = trainRepository.searchStations(query))
+            when (val result = trainRepository.searchStations(query)) {
+                is DataResult.Success -> _state.value = _state.value.copy(originResults = result.data)
+                is DataResult.Error -> _state.value = _state.value.copy(originResults = emptyList())
+                DataResult.Loading -> Unit
+            }
         }
     }
 
@@ -103,7 +107,11 @@ class TripPlannerViewModel(private val trainRepository: TrainRepository) : ViewM
         }
         destinationJob = viewModelScope.launch {
             delay(DEBOUNCE_MILLIS)
-            _state.value = _state.value.copy(destinationResults = trainRepository.searchStations(query))
+            when (val result = trainRepository.searchStations(query)) {
+                is DataResult.Success -> _state.value = _state.value.copy(destinationResults = result.data)
+                is DataResult.Error -> _state.value = _state.value.copy(destinationResults = emptyList())
+                DataResult.Loading -> Unit
+            }
         }
     }
 
