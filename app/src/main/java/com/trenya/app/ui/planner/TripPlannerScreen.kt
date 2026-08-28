@@ -226,6 +226,14 @@ fun TripPlannerScreen(presetOriginId: String? = null) {
                     items(state.trains, key = { it.serviceNumber }) { train ->
                         Column {
                             ArrivalRow(train)
+                            state.selectedDestination?.let { destination ->
+                                Text(
+                                    stringResource(R.string.planner_stops_at, destination.name),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
                             viewModel.estimateDurationMinutes(train)?.let { minutes ->
                                 Text(
                                     stringResource(

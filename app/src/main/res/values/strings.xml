@@ -26,6 +26,7 @@
     <!-- Home -->
     <string name="home_nearby_title">Estaciones cerca tuyo</string>
     <string name="home_nearby_empty">Activá la ubicación para ver tus estaciones más cercanas</string>
+    <string name="home_nearby_none_found">No encontramos estaciones cerca tuyo por ahora</string>
     <string name="home_nearby_enable_location">Activar ubicación</string>
     <string name="home_favorites_title">Tus favoritas</string>
     <string name="home_no_favorites">Todavía no marcaste ninguna estación como favorita. Tocá la estrella en cualquier estación para agregarla acá.</string>
@@ -77,6 +78,7 @@
     <string name="planner_search">Buscar próximos trenes</string>
     <string name="planner_select_both">Elegí una estación de origen y una de destino</string>
     <string name="planner_no_direct">No encontramos servicios directos entre estas dos estaciones ahora</string>
+    <string name="planner_stops_at">Con parada en %1$s</string>
     <string name="planner_duration">%1$s de viaje aprox.</string>
 
     <!-- Ajustes -->

@@ -202,7 +202,7 @@ fun HomeScreen(onStationClick: (String) -> Unit) {
         } else if (state.isLoadingLocation) {
             item { LoadingState() }
         } else if (state.nearbyStations.isEmpty()) {
-            item { EmptyState(title = stringResource(R.string.home_nearby_empty)) }
+            item { EmptyState(title = stringResource(R.string.home_nearby_none_found)) }
         } else {
             items(state.nearbyStations, key = { it.station.id }) { nearby ->
                 val isFav = state.favorites.any { it.stationId == nearby.station.id }

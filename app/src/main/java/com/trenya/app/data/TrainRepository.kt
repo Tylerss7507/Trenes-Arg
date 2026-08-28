@@ -15,6 +15,8 @@ import com.trenya.app.data.remote.ArriboResultDto
 import com.trenya.app.data.remote.EstacionDto
 import com.trenya.app.data.remote.SofseApiService
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -26,6 +28,9 @@ class TrainRepository(
     private val gson = Gson()
     private var inMemoryStations: List<Station>? = null
 
+    /** Usadas para reconstruir la lista completa de estaciones (ver getAllStations). */
+    private val ALPHABET_PROBES = listOf("a", "e", "i", "o", "u")
+
     // ---------------------------------------------------------------------
     // Estaciones
     // ---------------------------------------------------------------------
@@ -36,6 +41,13 @@ class TrainRepository(
      * falla, devuelve lo último cacheado en vez de una lista vacía: la lista
      * de estaciones cambia muy poco, así que datos "viejos" siguen siendo
      * útiles para búsqueda y cercanía.
+     *
+     * En vez de un único pedido sin filtro (que es justamente el que no
+     * andaba: la API lo maneja distinto a como documenta), reconstruimos la
+     * lista combinando varias búsquedas livianas por texto -una por cada
+     * vocal-, que es el mismo mecanismo ya verificado que usa searchStations().
+     * Prácticamente cualquier nombre de estación en español tiene alguna
+     * vocal, así que la unión de las cinco cubre el universo real.
      */
     suspend fun getAllStations(forceRefresh: Boolean = false): List<Station> = withContext(Dispatchers.IO) {
         inMemoryStations?.let { if (!forceRefresh) return@withContext it }
@@ -50,7 +62,19 @@ class TrainRepository(
         }
 
         try {
-            val stations = api.buscarEstaciones().mapNotNull { it.toDomain() }
+            val merged = LinkedHashMap<String, Station>()
+            val results = ALPHABET_PROBES.map { letter ->
+                async {
+                    try {
+                        api.buscarEstaciones(nombre = letter).mapNotNull { it.toDomain() }
+                    } catch (e: Exception) {
+                        emptyList()
+                    }
+                }
+            }.awaitAll()
+            results.forEach { batch -> batch.forEach { merged[it.id] = it } }
+
+            val stations = merged.values.toList()
             if (stations.isNotEmpty()) {
                 inMemoryStations = stations
                 writeStationsCache(stations)
