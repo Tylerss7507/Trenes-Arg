@@ -32,6 +32,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,6 +41,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberCameraPositionState
 import com.trenya.app.R
 import com.trenya.app.core.DistanceUtils
 import com.trenya.app.data.model.Station
@@ -47,10 +54,6 @@ import com.trenya.app.data.model.TrainStatus
 import com.trenya.app.data.model.UpcomingTrain
 import com.trenya.app.ui.theme.CountdownTextStyle
 import com.trenya.app.ui.theme.TrenYaColors
-
-// -------------------------------------------------------------------------
-// Formato de tiempo
-// -------------------------------------------------------------------------
 
 @Composable
 fun formatCountdown(secondsRemaining: Long?): String {
@@ -78,10 +81,6 @@ private fun statusLabelRes(status: TrainStatus): Int = when (status) {
     TrainStatus.CANCELLED -> R.string.status_cancelled
     TrainStatus.UNKNOWN -> R.string.status_unknown
 }
-
-// -------------------------------------------------------------------------
-// Chips
-// -------------------------------------------------------------------------
 
 @Composable
 fun LineChip(lineName: String, modifier: Modifier = Modifier) {
@@ -123,10 +122,6 @@ fun StatusBadge(status: TrainStatus, modifier: Modifier = Modifier) {
         )
     }
 }
-
-// -------------------------------------------------------------------------
-// Tarjeta de estación (cercanas / búsqueda / favoritas)
-// -------------------------------------------------------------------------
 
 @Composable
 fun StationCard(
@@ -198,10 +193,6 @@ fun StationCard(
     }
 }
 
-// -------------------------------------------------------------------------
-// Fila de arribo (lista de próximos trenes)
-// -------------------------------------------------------------------------
-
 @Composable
 fun ArrivalRow(train: UpcomingTrain, modifier: Modifier = Modifier) {
     Row(
@@ -249,10 +240,6 @@ fun ArrivalRow(train: UpcomingTrain, modifier: Modifier = Modifier) {
         }
     }
 }
-
-// -------------------------------------------------------------------------
-// Hero: el próximo tren, grande y arriba de todo
-// -------------------------------------------------------------------------
 
 @Composable
 fun NextTrainHero(train: UpcomingTrain, modifier: Modifier = Modifier) {
@@ -315,10 +302,6 @@ private fun LineChipOnColor(label: String, modifier: Modifier = Modifier) {
         Text(label, style = MaterialTheme.typography.labelMedium, color = Color.White, fontWeight = FontWeight.SemiBold)
     }
 }
-
-// -------------------------------------------------------------------------
-// Estados: vacío / carga / error / offline
-// -------------------------------------------------------------------------
 
 @Composable
 fun LoadingState(modifier: Modifier = Modifier) {
@@ -395,4 +378,26 @@ fun SectionHeader(title: String, modifier: Modifier = Modifier) {
         style = MaterialTheme.typography.titleLarge,
         modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp)
     )
+}
+
+@Composable
+fun StationLocationMap(
+    latitude: Double,
+    longitude: Double,
+    stationName: String,
+    modifier: Modifier = Modifier
+) {
+    val stationPosition = remember(latitude, longitude) { LatLng(latitude, longitude) }
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(stationPosition, 15f)
+    }
+    GoogleMap(
+        modifier = modifier,
+        cameraPositionState = cameraPositionState
+    ) {
+        Marker(
+            state = MarkerState(position = stationPosition),
+            title = stationName
+        )
+    }
 }

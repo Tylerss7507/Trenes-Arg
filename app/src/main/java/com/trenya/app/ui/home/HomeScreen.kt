@@ -165,7 +165,7 @@ fun HomeScreen(onStationClick: (String) -> Unit) {
 
         if (state.favorites.size > 1) {
             item { SectionHeader(stringResource(R.string.home_favorites_title)) }
-            items(state.favorites.drop(1), key = { it.stationId }) { fav ->
+            items(state.favorites.drop(1), key = { "fav_${it.stationId}" }) { fav ->
                 Column(Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
                     StationCard(
                         station = Station(fav.stationId, fav.stationName, 0.0, 0.0, emptyList(), null),
@@ -204,7 +204,7 @@ fun HomeScreen(onStationClick: (String) -> Unit) {
         } else if (state.nearbyStations.isEmpty()) {
             item { EmptyState(title = stringResource(R.string.home_nearby_none_found)) }
         } else {
-            items(state.nearbyStations, key = { it.station.id }) { nearby ->
+            items(state.nearbyStations, key = { "nearby_${it.station.id}" }) { nearby ->
                 val isFav = state.favorites.any { it.stationId == nearby.station.id }
                 Column(Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
                     StationCard(

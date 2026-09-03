@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material.icons.filled.NotificationsNone
 import androidx.compose.material.icons.filled.Star
@@ -66,6 +67,7 @@ import com.trenya.app.ui.components.EmptyState
 import com.trenya.app.ui.components.ErrorState
 import com.trenya.app.ui.components.LoadingState
 import com.trenya.app.ui.components.OfflineBanner
+import com.trenya.app.ui.components.StationLocationMap
 import com.trenya.app.ui.theme.TrenYaColors
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -79,6 +81,9 @@ private const val TRAINS_TO_FETCH = 12
 data class StationDetailUiState(
     val isLoading: Boolean = true,
     val stationName: String = "",
+    val latitude: Double? = null,
+    val longitude: Double? = null,
+    val showMap: Boolean = false,
     val allTrains: List<UpcomingTrain> = emptyList(),
     val branchFilter: Int? = null,
     val isFavorite: Boolean = false,
@@ -108,7 +113,11 @@ class StationDetailViewModel(
         viewModelScope.launch {
             val station = trainRepository.getStationById(stationId)
             stationRef = station
-            _state.value = _state.value.copy(stationName = station?.name ?: stationId)
+            _state.value = _state.value.copy(
+                stationName = station?.name ?: stationId,
+                latitude = station?.latitude,
+                longitude = station?.longitude
+            )
         }
         viewModelScope.launch {
             userPreferencesRepository.favoritesFlow.collect { favorites ->
@@ -151,6 +160,10 @@ class StationDetailViewModel(
 
     fun selectBranch(branchId: Int?) {
         _state.value = _state.value.copy(branchFilter = branchId)
+    }
+
+    fun toggleMap() {
+        _state.value = _state.value.copy(showMap = !_state.value.showMap)
     }
 
     fun toggleFavorite() {
@@ -243,6 +256,39 @@ fun StationDetailScreen(
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.SemiBold
                 )
+            }
+
+            if (state.latitude != null && state.longitude != null) {
+                val stationLat = state.latitude
+                val stationLon = state.longitude
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 4.dp)
+                        .clickable { viewModel.toggleMap() },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(Icons.Filled.LocationOn, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        stringResource(if (state.showMap) R.string.station_hide_map else R.string.station_show_map),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+                AnimatedVisibility(visible = state.showMap) {
+                    StationLocationMap(
+                        latitude = stationLat,
+                        longitude = stationLon,
+                        stationName = state.stationName,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .padding(horizontal = 16.dp, vertical = 4.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                    )
+                }
             }
 
             if (state.availableBranches.size > 1) {

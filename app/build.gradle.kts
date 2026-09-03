@@ -15,12 +15,12 @@ android {
         versionCode = 1
         versionName = "1.0.0"
 
-        // Base de la API pública de arribos. Ver README para más contexto:
-        // es un proxy comunitario de la API interna de SOFSE, no un endpoint oficial.
-        // Al tenerla como BuildConfig field, cambiarla (por ejemplo a una instancia
-        // propia auto-hosteada, o a un endpoint oficial si algún día existe) es
-        // cuestión de una sola línea, sin tocar código.
         buildConfigField("String", "API_BASE_URL", "\"https://ariedro.dev/api-trenes/\"")
+
+        val mapsApiKey = (project.findProperty("MAPS_API_KEY") as String?)
+            ?: System.getenv("MAPS_API_KEY")
+            ?: ""
+        manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
     }
 
     buildTypes {
@@ -63,7 +63,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.activity.compose)
 
-    // Compose
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
@@ -73,24 +72,21 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     debugImplementation(libs.androidx.ui.tooling)
 
-    // Red
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging.interceptor)
     implementation(libs.gson)
 
-    // Background work / notificaciones por demoras
     implementation(libs.androidx.work.runtime.ktx)
 
-    // Preferencias y favoritos (sin Room: todo vía DataStore + JSON)
     implementation(libs.androidx.datastore.preferences)
 
-    // Ubicación (estaciones cercanas)
     implementation(libs.play.services.location)
     implementation(libs.kotlinx.coroutines.play.services)
     implementation(libs.kotlinx.coroutines.android)
 
-    // Widget de pantalla de inicio (próximo tren favorito)
     implementation(libs.androidx.glance.appwidget)
+
+    implementation(libs.maps.compose)
 }
