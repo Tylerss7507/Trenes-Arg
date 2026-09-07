@@ -41,12 +41,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.MarkerState
-import com.google.maps.android.compose.rememberCameraPositionState
+import androidx.compose.ui.viewinterop.AndroidView
 import com.trenya.app.R
 import com.trenya.app.core.DistanceUtils
 import com.trenya.app.data.model.Station
@@ -54,6 +49,10 @@ import com.trenya.app.data.model.TrainStatus
 import com.trenya.app.data.model.UpcomingTrain
 import com.trenya.app.ui.theme.CountdownTextStyle
 import com.trenya.app.ui.theme.TrenYaColors
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
 
 @Composable
 fun formatCountdown(secondsRemaining: Long?): String {
@@ -387,17 +386,32 @@ fun StationLocationMap(
     stationName: String,
     modifier: Modifier = Modifier
 ) {
-    val stationPosition = remember(latitude, longitude) { LatLng(latitude, longitude) }
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(stationPosition, 15f)
-    }
-    GoogleMap(
+    val geoPoint = remember(latitude, longitude) { GeoPoint(latitude, longitude) }
+    AndroidView(
         modifier = modifier,
-        cameraPositionState = cameraPositionState
-    ) {
-        Marker(
-            state = MarkerState(position = stationPosition),
-            title = stationName
-        )
-    }
+        factory = { context ->
+            MapView(context).apply {
+                setTileSource(TileSourceFactory.MAPNIK)
+                setMultiTouchControls(true)
+                controller.setZoom(15.0)
+                controller.setCenter(geoPoint)
+                overlays.add(
+                    Marker(this).apply {
+                        position = geoPoint
+                        title = stationName
+                        setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                    }
+                )
+            }
+        },
+        onRelease = { mapView -> mapView.onDetach() },
+        update = { mapView ->
+            mapView.controller.setCenter(geoPoint)
+            (mapView.overlays.firstOrNull() as? Marker)?.apply {
+                position = geoPoint
+                title = stationName
+            }
+            mapView.invalidate()
+        }
+    )
 }

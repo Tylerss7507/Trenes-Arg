@@ -16,11 +16,6 @@ android {
         versionName = "1.0.0"
 
         buildConfigField("String", "API_BASE_URL", "\"https://ariedro.dev/api-trenes/\"")
-
-        val mapsApiKey = (project.findProperty("MAPS_API_KEY") as String?)
-            ?: System.getenv("MAPS_API_KEY")
-            ?: ""
-        manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
     }
 
     buildTypes {
@@ -88,5 +83,5 @@ dependencies {
 
     implementation(libs.androidx.glance.appwidget)
 
-    implementation(libs.maps.compose)
+    implementation(libs.osmdroid.android)
 }
